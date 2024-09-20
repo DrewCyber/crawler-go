@@ -25,12 +25,7 @@ type SqliteStore struct {
 	stmt *sql.Stmt
 }
 
-func NewSqliteStore(file string) (*SqliteStore, error) {
-	db, err := sql.Open("sqlite3", file)
-	if err != nil {
-		return nil, err
-	}
-
+func NewSqliteStore(db *sql.DB) (*SqliteStore, error) {
 	if _, err := db.Exec(schemaSQL); err != nil {
 		return nil, err
 	}
@@ -50,9 +45,4 @@ func NewSqliteStore(file string) (*SqliteStore, error) {
 func (s *SqliteStore) AddBlogPost(blogPost crawler.BlogPost) error {
 	_, err := s.stmt.Exec(blogPost.Id, blogPost.Url, blogPost.Title, blogPost.Html, blogPost.Tags)
 	return err
-}
-
-func (s *SqliteStore) Close() {
-	s.sql.Close()
-	s.stmt.Close()
 }

@@ -17,13 +17,11 @@ type Crawler struct {
 
 type Scraper interface {
 	Visit(string) error
-	// Parse(HTMLElement)
 	Wait()
 }
 
 type Storage interface {
 	AddBlogPost(BlogPost) error
-	Close()
 }
 
 func NewCrawler(scraper Scraper, storage Storage) *Crawler {

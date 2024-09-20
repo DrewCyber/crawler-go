@@ -8,9 +8,7 @@ import (
 	"github.com/gocolly/colly"
 )
 
-var err error
-
-func NewCollector(store Repo) *colly.Collector {
+func NewCollector(store crawler.Storage) *colly.Collector {
 	c := colly.NewCollector(
 		colly.AllowedDomains("evo-lutio.livejournal.com"),
 		colly.CacheDir("./colly_cache"),
@@ -48,6 +46,7 @@ func NewCollector(store Repo) *colly.Collector {
 		// blogPost.DateTime = e.ChildText(".b-singlepost-author-userinfo-screen")
 		blogPost.Tags = e.ChildText(".b-singlepost-tags-items") // Need to iterate?
 		blogPost.Url = e.Request.URL.String()
+		var err error
 		blogPost.Id, err = GetPostIdFromUrl(blogPost.Url)
 		if err != nil {
 			fmt.Printf("Failed to get post ID: %s", err)

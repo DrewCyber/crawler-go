@@ -1,20 +1,28 @@
 package main
 
 import (
+	"database/sql"
+
 	"github.com/DrewCyber/crawler-go/internal/crawler"
 	"github.com/DrewCyber/crawler-go/internal/scraper"
 	storage "github.com/DrewCyber/crawler-go/internal/sqlite_storage"
+	_ "github.com/mattn/go-sqlite3"
 )
 
 func main() {
-	store, err := storage.NewSqliteStore("./blog.db")
+	db, err := sql.Open("sqlite3", "./blog.db")
 	if err != nil {
 		panic(err)
 	}
-	defer store.Close()
+
+	defer db.Close()
+
+	store, err := storage.NewSqliteStore(db)
+	if err != nil {
+		panic(err)
+	}
 
 	scraper := scraper.NewCollector(store)
-
 	crawler := crawler.NewCrawler(scraper, store)
 
 	// open the target URL
